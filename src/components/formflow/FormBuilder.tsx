@@ -16,13 +16,15 @@ import { FieldPalette } from './FieldPalette';
 import { FormCanvas } from './FormCanvas';
 import { FieldEditor } from './FieldEditor';
 import { FormPreview } from './FormPreview';
+import { TemplatePicker, FormTemplate } from './FormTemplates';
 import { Button } from '@/components/ui/button';
 import { 
   Eye, 
   EyeOff, 
   Save, 
   Share2, 
-  Check
+  Check,
+  ArrowLeft
 } from 'lucide-react';
 import { toast } from 'sonner';
 import clipboardIcon from '@/assets/clipboard-icon.png';
@@ -35,6 +37,7 @@ export function FormBuilder() {
   const [showPreview, setShowPreview] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(true);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -45,6 +48,19 @@ export function FormBuilder() {
   );
 
   const selectedField = fields.find((f) => f.id === selectedFieldId) || null;
+
+  const handleSelectTemplate = (template: FormTemplate) => {
+    setFormTitle(template.title);
+    setFormDescription(template.formDescription);
+    setFields(
+      template.fields.map((field) => ({
+        ...field,
+        id: uuidv4(),
+        options: field.options?.map((opt) => ({ ...opt, id: uuidv4() })),
+      }))
+    );
+    setShowTemplates(false);
+  };
 
   const createField = useCallback((type: FieldType): FormField => {
     const fieldInfo = FIELD_TYPES.find((f) => f.type === type)!;
@@ -147,6 +163,39 @@ export function FormBuilder() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Template Selection Screen
+  if (showTemplates) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-md border-b border-border">
+          <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl overflow-hidden liftup-shadow">
+                  <img src={clipboardIcon} alt="LiftupForms" className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold liftup-gradient-text">LiftupForms</h1>
+                  <p className="text-xs text-muted-foreground">Form Builder</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-foreground mb-3">Choose a Template</h2>
+            <p className="text-muted-foreground text-lg">
+              Start with a template or create from scratch
+            </p>
+          </div>
+          <TemplatePicker onSelectTemplate={handleSelectTemplate} />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -160,6 +209,14 @@ export function FormBuilder() {
           <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowTemplates(true)}
+                  className="mr-1"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
                 <div className="w-10 h-10 rounded-xl overflow-hidden liftup-shadow">
                   <img src={clipboardIcon} alt="LiftupForms" className="w-full h-full object-cover" />
                 </div>
