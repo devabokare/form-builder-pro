@@ -2,7 +2,8 @@ import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { FormField } from '@/types/form';
 import { SortableField } from './SortableField';
-import { FileText, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import formsIllustration from '@/assets/forms-illustration.png';
 
 interface FormCanvasProps {
   fields: FormField[];
@@ -57,17 +58,22 @@ export function FormCanvas({
         }`}
       >
         {fields.length === 0 ? (
-          <div className={`flex flex-col items-center justify-center h-full min-h-[300px] border-2 border-dashed rounded-xl transition-colors duration-200 ${
+          <div className={`flex flex-col items-center justify-center h-full min-h-[400px] border-2 border-dashed rounded-xl transition-colors duration-200 ${
             isOver ? 'border-primary bg-accent' : 'border-border'
           }`}>
-            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-              <FileText className="w-8 h-8 text-muted-foreground" />
-            </div>
-            <p className="text-muted-foreground text-center">
-              Drag fields here to build your form
+            <img 
+              src={formsIllustration} 
+              alt="Create your form" 
+              className="w-48 h-48 object-contain mb-6 opacity-90"
+            />
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              Start Building Your Form
+            </h3>
+            <p className="text-muted-foreground text-center max-w-xs">
+              Drag fields from the left panel to create your custom form
             </p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
-              or click a field type to add it
+            <p className="text-sm text-muted-foreground/70 mt-2">
+              ✨ It's quick and easy!
             </p>
           </div>
         ) : (

@@ -22,11 +22,10 @@ import {
   EyeOff, 
   Save, 
   Share2, 
-  FileText,
-  Copy,
   Check
 } from 'lucide-react';
 import { toast } from 'sonner';
+import clipboardIcon from '@/assets/clipboard-icon.png';
 
 export function FormBuilder() {
   const [formTitle, setFormTitle] = useState('');
@@ -161,8 +160,8 @@ export function FormBuilder() {
           <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl liftup-gradient flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-primary-foreground" />
+                <div className="w-10 h-10 rounded-xl overflow-hidden liftup-shadow">
+                  <img src={clipboardIcon} alt="LiftupForms" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h1 className="text-lg font-bold liftup-gradient-text">LiftupForms</h1>
