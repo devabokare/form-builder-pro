@@ -47,6 +47,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        formflow: {
+          surface: "hsl(var(--formflow-surface))",
+          "surface-elevated": "hsl(var(--formflow-surface-elevated))",
+          success: "hsl(var(--formflow-success))",
+          warning: "hsl(var(--formflow-warning))",
+          info: "hsl(var(--formflow-info))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -62,6 +69,11 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) + 4px)",
+        "2xl": "calc(var(--radius) + 8px)",
+      },
+      fontFamily: {
+        sans: ["'Plus Jakarta Sans'", "system-ui", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
