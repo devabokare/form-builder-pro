@@ -6,98 +6,98 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 220 20% 10%;
+    --background: 24 100% 97%;
+    --foreground: 20 10% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 20 10% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 20 10% 10%;
 
-    --primary: 173 80% 40%;
+    --primary: 24 95% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 220 20% 20%;
+    --secondary: 24 60% 95%;
+    --secondary-foreground: 20 20% 20%;
 
-    --muted: 210 15% 93%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 24 30% 92%;
+    --muted-foreground: 20 10% 45%;
 
-    --accent: 173 60% 95%;
-    --accent-foreground: 173 80% 25%;
+    --accent: 24 80% 94%;
+    --accent-foreground: 24 95% 40%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 88%;
-    --input: 210 20% 88%;
-    --ring: 173 80% 40%;
+    --border: 24 30% 88%;
+    --input: 24 30% 88%;
+    --ring: 24 95% 53%;
 
     --radius: 0.75rem;
 
-    /* Custom FormFlow tokens */
-    --formflow-gradient-start: 173 80% 40%;
-    --formflow-gradient-end: 199 89% 48%;
-    --formflow-surface: 0 0% 100%;
-    --formflow-surface-elevated: 0 0% 100%;
-    --formflow-shadow: 220 20% 10%;
-    --formflow-success: 142 71% 45%;
-    --formflow-warning: 38 92% 50%;
-    --formflow-info: 199 89% 48%;
+    /* Custom LiftupForms tokens */
+    --liftup-gradient-start: 24 95% 53%;
+    --liftup-gradient-end: 16 90% 50%;
+    --liftup-surface: 0 0% 100%;
+    --liftup-surface-elevated: 0 0% 100%;
+    --liftup-shadow: 20 10% 10%;
+    --liftup-success: 142 71% 45%;
+    --liftup-warning: 38 92% 50%;
+    --liftup-info: 199 89% 48%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 24 100% 97%;
+    --sidebar-foreground: 24 30% 30%;
+    --sidebar-primary: 24 95% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 24 60% 95%;
+    --sidebar-accent-foreground: 24 95% 40%;
+    --sidebar-border: 24 30% 88%;
+    --sidebar-ring: 24 95% 53%;
   }
 
   .dark {
-    --background: 220 20% 8%;
-    --foreground: 210 20% 98%;
+    --background: 20 15% 8%;
+    --foreground: 24 20% 95%;
 
-    --card: 220 20% 12%;
-    --card-foreground: 210 20% 98%;
+    --card: 20 15% 12%;
+    --card-foreground: 24 20% 95%;
 
-    --popover: 220 20% 12%;
-    --popover-foreground: 210 20% 98%;
+    --popover: 20 15% 12%;
+    --popover-foreground: 24 20% 95%;
 
-    --primary: 173 80% 45%;
-    --primary-foreground: 220 20% 8%;
+    --primary: 24 95% 55%;
+    --primary-foreground: 20 15% 8%;
 
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 210 20% 90%;
+    --secondary: 20 12% 18%;
+    --secondary-foreground: 24 20% 90%;
 
-    --muted: 220 15% 18%;
-    --muted-foreground: 210 15% 60%;
+    --muted: 20 12% 18%;
+    --muted-foreground: 24 15% 60%;
 
-    --accent: 173 40% 20%;
-    --accent-foreground: 173 80% 70%;
+    --accent: 24 40% 20%;
+    --accent-foreground: 24 95% 70%;
 
     --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 20%;
-    --input: 220 15% 20%;
-    --ring: 173 80% 45%;
+    --border: 20 12% 20%;
+    --input: 20 12% 20%;
+    --ring: 24 95% 55%;
 
-    --formflow-gradient-start: 173 80% 45%;
-    --formflow-gradient-end: 199 89% 52%;
-    --formflow-surface: 220 20% 14%;
-    --formflow-surface-elevated: 220 20% 18%;
+    --liftup-gradient-start: 24 95% 55%;
+    --liftup-gradient-end: 16 90% 52%;
+    --liftup-surface: 20 15% 14%;
+    --liftup-surface-elevated: 20 15% 18%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 20 15% 10%;
+    --sidebar-foreground: 24 20% 90%;
+    --sidebar-primary: 24 95% 55%;
+    --sidebar-primary-foreground: 20 15% 8%;
+    --sidebar-accent: 20 12% 18%;
+    --sidebar-accent-foreground: 24 95% 70%;
+    --sidebar-border: 20 12% 18%;
+    --sidebar-ring: 24 95% 55%;
   }
 }
 
@@ -113,33 +113,33 @@
 }
 
 @layer utilities {
-  .formflow-gradient {
-    background: linear-gradient(135deg, hsl(var(--formflow-gradient-start)), hsl(var(--formflow-gradient-end)));
+  .liftup-gradient {
+    background: linear-gradient(135deg, hsl(var(--liftup-gradient-start)), hsl(var(--liftup-gradient-end)));
   }
 
-  .formflow-gradient-text {
-    background: linear-gradient(135deg, hsl(var(--formflow-gradient-start)), hsl(var(--formflow-gradient-end)));
+  .liftup-gradient-text {
+    background: linear-gradient(135deg, hsl(var(--liftup-gradient-start)), hsl(var(--liftup-gradient-end)));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .formflow-shadow-sm {
-    box-shadow: 0 1px 3px 0 hsl(var(--formflow-shadow) / 0.04), 
-                0 1px 2px -1px hsl(var(--formflow-shadow) / 0.04);
+  .liftup-shadow-sm {
+    box-shadow: 0 1px 3px 0 hsl(var(--liftup-shadow) / 0.04), 
+                0 1px 2px -1px hsl(var(--liftup-shadow) / 0.04);
   }
 
-  .formflow-shadow {
-    box-shadow: 0 4px 6px -1px hsl(var(--formflow-shadow) / 0.06), 
-                0 2px 4px -2px hsl(var(--formflow-shadow) / 0.06);
+  .liftup-shadow {
+    box-shadow: 0 4px 6px -1px hsl(var(--liftup-shadow) / 0.06), 
+                0 2px 4px -2px hsl(var(--liftup-shadow) / 0.06);
   }
 
-  .formflow-shadow-lg {
-    box-shadow: 0 10px 15px -3px hsl(var(--formflow-shadow) / 0.08), 
-                0 4px 6px -4px hsl(var(--formflow-shadow) / 0.08);
+  .liftup-shadow-lg {
+    box-shadow: 0 10px 15px -3px hsl(var(--liftup-shadow) / 0.08), 
+                0 4px 6px -4px hsl(var(--liftup-shadow) / 0.08);
   }
 
-  .formflow-shadow-glow {
+  .liftup-shadow-glow {
     box-shadow: 0 0 0 1px hsl(var(--primary) / 0.1),
                 0 4px 20px -4px hsl(var(--primary) / 0.2);
   }
@@ -156,11 +156,11 @@
   }
 
   .field-card:hover {
-    @apply formflow-shadow border-primary/20;
+    @apply liftup-shadow border-primary/20;
   }
 
   .field-card.dragging {
-    @apply formflow-shadow-lg border-primary;
+    @apply liftup-shadow-lg border-primary;
   }
 
   .field-palette-item {
@@ -169,7 +169,7 @@
   }
 
   .field-palette-item:hover {
-    @apply formflow-shadow-sm;
+    @apply liftup-shadow-sm;
   }
 
   .field-palette-item:active {
@@ -191,7 +191,7 @@
   }
 
   .form-builder-panel {
-    @apply bg-card rounded-2xl border border-border formflow-shadow;
+    @apply bg-card rounded-2xl border border-border liftup-shadow;
   }
 }
 

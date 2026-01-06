@@ -32,7 +32,7 @@ export function FormCanvas({
   return (
     <div className="form-builder-panel flex-1 flex flex-col min-h-0">
       {/* Form Header */}
-      <div className="p-6 border-b border-border formflow-gradient rounded-t-2xl">
+      <div className="p-6 border-b border-border liftup-gradient rounded-t-2xl">
         <input
           type="text"
           value={formTitle}

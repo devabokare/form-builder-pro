@@ -161,11 +161,11 @@ export function FormBuilder() {
           <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl formflow-gradient flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl liftup-gradient flex items-center justify-center">
                   <FileText className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold formflow-gradient-text">FormFlow</h1>
+                  <h1 className="text-lg font-bold liftup-gradient-text">LiftupForms</h1>
                   <p className="text-xs text-muted-foreground">Form Builder</p>
                 </div>
               </div>
@@ -199,7 +199,7 @@ export function FormBuilder() {
                   Share
                 </Button>
 
-                <Button size="sm" onClick={handleSave} className="formflow-gradient text-primary-foreground border-0">
+                <Button size="sm" onClick={handleSave} className="liftup-gradient text-primary-foreground border-0">
                   <Save className="w-4 h-4 mr-2" />
                   Save
                 </Button>
@@ -254,7 +254,7 @@ export function FormBuilder() {
 
       <DragOverlay>
         {activeId && activeId.startsWith('palette-') && (
-          <div className="field-palette-item drag-overlay bg-card formflow-shadow-lg">
+          <div className="field-palette-item drag-overlay bg-card liftup-shadow-lg">
             <span className="text-sm font-medium">
               {FIELD_TYPES.find((f) => f.type === activeId.replace('palette-', ''))?.label}
             </span>
