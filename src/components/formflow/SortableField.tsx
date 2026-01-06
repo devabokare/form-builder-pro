@@ -11,7 +11,10 @@ import {
   ChevronDown, 
   Circle, 
   CheckSquare, 
-  Calendar 
+  Calendar,
+  Image,
+  FileText,
+  Upload
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -24,6 +27,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   radio: Circle,
   checkbox: CheckSquare,
   date: Calendar,
+  image: Image,
+  document: FileText,
 };
 
 interface SortableFieldProps {
@@ -125,6 +130,18 @@ export function SortableField({ field, isSelected, onSelect, onDelete }: Sortabl
               <div className="h-9 bg-muted/50 rounded-lg border border-border px-3 flex items-center justify-between text-muted-foreground/50">
                 <span>MM/DD/YYYY</span>
                 <Calendar className="w-4 h-4" />
+              </div>
+            )}
+            {field.type === 'image' && (
+              <div className="h-20 bg-muted/50 rounded-lg border border-dashed border-border px-3 py-2 flex flex-col items-center justify-center text-muted-foreground/50">
+                <Image className="w-6 h-6 mb-1" />
+                <span className="text-xs">Upload image</span>
+              </div>
+            )}
+            {field.type === 'document' && (
+              <div className="h-20 bg-muted/50 rounded-lg border border-dashed border-border px-3 py-2 flex flex-col items-center justify-center text-muted-foreground/50">
+                <FileText className="w-6 h-6 mb-1" />
+                <span className="text-xs">Upload document</span>
               </div>
             )}
           </div>

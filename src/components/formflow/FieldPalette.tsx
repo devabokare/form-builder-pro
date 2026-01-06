@@ -9,7 +9,9 @@ import {
   Circle, 
   CheckSquare, 
   Calendar,
-  GripVertical
+  GripVertical,
+  Image,
+  FileText
 } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -21,6 +23,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Circle,
   CheckSquare,
   Calendar,
+  Image,
+  FileText,
 };
 
 interface DraggableFieldProps {
