@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2, X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -231,6 +232,153 @@ export function FieldEditor({ field, onUpdateField, onClose }: FieldEditorProps)
                   })}
                   className="h-9"
                 />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Validation for image upload */}
+        {field.type === 'image' && (
+          <div className="space-y-3 pt-3 border-t border-border">
+            <Label className="text-sm font-medium text-muted-foreground">
+              File Settings
+            </Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="max-file-size" className="text-xs text-muted-foreground">
+                Max File Size (MB)
+              </Label>
+              <Input
+                id="max-file-size"
+                type="number"
+                min={1}
+                max={50}
+                value={field.validation?.maxFileSize || ''}
+                onChange={(e) => onUpdateField({
+                  validation: {
+                    ...field.validation,
+                    maxFileSize: e.target.value ? parseInt(e.target.value) : undefined,
+                  },
+                })}
+                placeholder="10"
+                className="h-9"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">
+                Allowed File Types
+              </Label>
+              <div className="space-y-2">
+                {[
+                  { label: 'PNG', value: 'image/png' },
+                  { label: 'JPEG', value: 'image/jpeg' },
+                  { label: 'GIF', value: 'image/gif' },
+                  { label: 'WebP', value: 'image/webp' },
+                ].map((type) => {
+                  const isChecked = field.validation?.allowedFileTypes?.includes(type.value) ?? true;
+                  return (
+                    <div key={type.value} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`image-type-${type.value}`}
+                        checked={isChecked}
+                        onCheckedChange={(checked) => {
+                          const current = field.validation?.allowedFileTypes || ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+                          const newTypes = checked
+                            ? [...current, type.value]
+                            : current.filter((t) => t !== type.value);
+                          onUpdateField({
+                            validation: {
+                              ...field.validation,
+                              allowedFileTypes: newTypes.length > 0 ? newTypes : undefined,
+                            },
+                          });
+                        }}
+                      />
+                      <Label
+                        htmlFor={`image-type-${type.value}`}
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        {type.label}
+                      </Label>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Validation for document upload */}
+        {field.type === 'document' && (
+          <div className="space-y-3 pt-3 border-t border-border">
+            <Label className="text-sm font-medium text-muted-foreground">
+              File Settings
+            </Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="max-doc-size" className="text-xs text-muted-foreground">
+                Max File Size (MB)
+              </Label>
+              <Input
+                id="max-doc-size"
+                type="number"
+                min={1}
+                max={50}
+                value={field.validation?.maxFileSize || ''}
+                onChange={(e) => onUpdateField({
+                  validation: {
+                    ...field.validation,
+                    maxFileSize: e.target.value ? parseInt(e.target.value) : undefined,
+                  },
+                })}
+                placeholder="10"
+                className="h-9"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">
+                Allowed File Types
+              </Label>
+              <div className="space-y-2">
+                {[
+                  { label: 'PDF', value: 'application/pdf' },
+                  { label: 'Word (.doc)', value: 'application/msword' },
+                  { label: 'Word (.docx)', value: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+                  { label: 'Excel (.xls)', value: 'application/vnd.ms-excel' },
+                  { label: 'Excel (.xlsx)', value: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+                ].map((type) => {
+                  const isChecked = field.validation?.allowedFileTypes?.includes(type.value) ?? true;
+                  return (
+                    <div key={type.value} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`doc-type-${type.value}`}
+                        checked={isChecked}
+                        onCheckedChange={(checked) => {
+                          const current = field.validation?.allowedFileTypes || [
+                            'application/pdf',
+                            'application/msword',
+                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                            'application/vnd.ms-excel',
+                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                          ];
+                          const newTypes = checked
+                            ? [...current, type.value]
+                            : current.filter((t) => t !== type.value);
+                          onUpdateField({
+                            validation: {
+                              ...field.validation,
+                              allowedFileTypes: newTypes.length > 0 ? newTypes : undefined,
+                            },
+                          });
+                        }}
+                      />
+                      <Label
+                        htmlFor={`doc-type-${type.value}`}
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        {type.label}
+                      </Label>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
