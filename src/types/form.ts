@@ -29,6 +29,8 @@ export interface FormField {
     min?: number;
     max?: number;
     pattern?: string;
+    maxFileSize?: number; // in MB
+    allowedFileTypes?: string[]; // e.g., ['image/png', 'image/jpeg']
   };
 }
 
