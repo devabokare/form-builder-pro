@@ -1,73 +1,170 @@
-# Welcome to your Lovable project
+Formify is a single-page customizable form builder similar to Google Forms.
+It allows users to create dynamic forms, share public links, collect responses, and manage submissions — all integrated into an existing React + Node.js website.
 
-## Project info
+🚀 Features
+🔹 Form Builder
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Create forms with title & description
 
-## How can I edit this code?
+Add multiple field types:
 
-There are several ways of editing your application.
+Short text
 
-**Use Lovable**
+Long text
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Email
 
-Changes made via Lovable will be committed automatically to this repo.
+Number
 
-**Use your preferred IDE**
+Dropdown
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Radio buttons
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Checkboxes
 
-Follow these steps:
+Date
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Mark fields as required / optional
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Real-time live preview
 
-# Step 3: Install the necessary dependencies.
-npm i
+🔹 Form Sharing
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Auto-generated public form URL
 
-**Edit a file directly in GitHub**
+Anyone can submit responses (no login required)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Secure form access
 
-**Use GitHub Codespaces**
+🔹 Responses Management
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Store responses in PostgreSQL
 
-## What technologies are used for this project?
+View all submissions per form
 
-This project is built with:
+Export responses (CSV – optional)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+🔹 User Management
 
-## How can I deploy this project?
+Forms are linked to logged-in users
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Users can create, edit, and delete their own forms
 
-## Can I connect a custom domain to my Lovable project?
+🧱 Tech Stack
+Frontend
 
-Yes, you can!
+React.js
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+React Router
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Axios
+
+Tailwind CSS / CSS Modules (optional)
+
+Backend
+
+Node.js
+
+Express.js
+
+REST APIs
+
+Database
+
+PostgreSQL
+
+Authentication
+
+Existing auth system (JWT / session-based)
+
+📁 Project Structure
+formify/
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── FormBuilder.jsx
+│   │   │   ├── FormPreview.jsx
+│   │   │   └── FormSubmit.jsx
+│   │   ├── components/
+│   │   │   ├── FieldEditor.jsx
+│   │   │   ├── FieldPreview.jsx
+│   │   │   └── FormHeader.jsx
+│   │   └── services/api.js
+│
+├── backend/
+│   ├── routes/
+│   │   ├── form.routes.js
+│   │   └── response.routes.js
+│   ├── controllers/
+│   │   ├── form.controller.js
+│   │   └── response.controller.js
+│   ├── models/
+│   │   ├── form.model.js
+│   │   └── response.model.js
+│   └── server.js
+│
+└── README.md
+
+🗄️ Database Schema (PostgreSQL)
+forms
+Column	Type
+id	UUID
+user_id	UUID
+title	TEXT
+description	TEXT
+created_at	TIMESTAMP
+form_fields
+Column	Type
+id	UUID
+form_id	UUID
+label	TEXT
+type	TEXT
+required	BOOLEAN
+options	JSONB
+form_responses
+Column	Type
+id	UUID
+form_id	UUID
+submitted_at	TIMESTAMP
+form_response_values
+Column	Type
+id	UUID
+response_id	UUID
+field_id	UUID
+value	TEXT
+🔌 API Endpoints
+Forms
+
+POST /api/forms – Create form
+
+GET /api/forms/:id – Get form
+
+PUT /api/forms/:id – Update form
+
+DELETE /api/forms/:id – Delete form
+
+Responses
+
+POST /api/forms/:id/submit – Submit response
+
+GET /api/forms/:id/responses – Get all responses
+
+🔐 Security
+
+Input validation (backend & frontend)
+
+SQL injection protection
+
+XSS sanitization
+
+Rate limiting on public form submission
+
+🎨 UI / UX
+
+Clean and minimal UI (Google Forms inspired)
+
+Mobile responsive
+
+Real-time form preview
+
+Easy drag-and-drop field management
