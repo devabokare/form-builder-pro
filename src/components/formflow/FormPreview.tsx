@@ -216,9 +216,9 @@ export function FormPreview({ title, description, fields }: FormPreviewProps) {
           'mx-auto transition-all duration-300',
           viewMode === 'mobile' ? 'max-w-[375px]' : 'max-w-full'
         )}>
-          <div className="bg-card rounded-xl border border-border overflow-hidden formflow-shadow">
+          <div className="bg-card rounded-xl border border-border overflow-hidden liftup-shadow">
             {/* Form Header */}
-            <div className="formflow-gradient p-6">
+            <div className="liftup-gradient p-6">
               <h2 className="text-xl font-bold text-primary-foreground">
                 {title || 'Untitled Form'}
               </h2>
@@ -250,7 +250,7 @@ export function FormPreview({ title, description, fields }: FormPreviewProps) {
               )}
 
               {fields.length > 0 && (
-                <Button className="w-full formflow-gradient text-primary-foreground border-0 h-11">
+                <Button className="w-full liftup-gradient text-primary-foreground border-0 h-11">
                   <Send className="w-4 h-4 mr-2" />
                   Submit
                 </Button>
