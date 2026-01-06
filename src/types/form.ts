@@ -6,7 +6,9 @@ export type FieldType =
   | 'dropdown'
   | 'radio'
   | 'checkbox'
-  | 'date';
+  | 'date'
+  | 'image'
+  | 'document';
 
 export interface FieldOption {
   id: string;
@@ -57,4 +59,6 @@ export const FIELD_TYPES: { type: FieldType; label: string; icon: string }[] = [
   { type: 'radio', label: 'Radio Buttons', icon: 'Circle' },
   { type: 'checkbox', label: 'Checkboxes', icon: 'CheckSquare' },
   { type: 'date', label: 'Date', icon: 'Calendar' },
+  { type: 'image', label: 'Image Upload', icon: 'Image' },
+  { type: 'document', label: 'Document Upload', icon: 'FileText' },
 ];

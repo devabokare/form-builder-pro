@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Send, Smartphone, Monitor } from 'lucide-react';
+import { CalendarIcon, Send, Smartphone, Monitor, Upload, Image, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -176,6 +176,44 @@ export function FormPreview({ title, description, fields }: FormPreviewProps) {
               />
             </PopoverContent>
           </Popover>
+        );
+
+      case 'image':
+        return (
+          <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                <Image className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Upload an image</p>
+                <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
+              </div>
+              <Button variant="outline" size="sm" className="mt-2">
+                <Upload className="w-4 h-4 mr-2" />
+                Choose File
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 'document':
+        return (
+          <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors cursor-pointer">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                <FileText className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Upload a document</p>
+                <p className="text-xs text-muted-foreground">PDF, DOC, DOCX up to 10MB</p>
+              </div>
+              <Button variant="outline" size="sm" className="mt-2">
+                <Upload className="w-4 h-4 mr-2" />
+                Choose File
+              </Button>
+            </div>
+          </div>
         );
 
       default:
