@@ -1,47 +1,67 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, BarChart3, Users, FileText, TrendingUp, Eye, Clock, CheckCircle } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ArrowLeft, BarChart3, Users, FileText, TrendingUp, Eye, CheckCircle, CalendarIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
+import { format, subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
+import { cn } from '@/lib/utils';
 import clipboardIcon from '@/assets/clipboard-icon.png';
 
-const submissionData = [
-  { day: 'Mon', submissions: 12 },
-  { day: 'Tue', submissions: 19 },
-  { day: 'Wed', submissions: 15 },
-  { day: 'Thu', submissions: 27 },
-  { day: 'Fri', submissions: 22 },
-  { day: 'Sat', submissions: 8 },
-  { day: 'Sun', submissions: 5 },
-];
+// Seed-based pseudo-random for consistent data per date
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
 
-const fieldTypeData = [
-  { name: 'Short Text', value: 35 },
-  { name: 'Email', value: 20 },
-  { name: 'Dropdown', value: 18 },
-  { name: 'Checkbox', value: 12 },
-  { name: 'Number', value: 8 },
-  { name: 'Other', value: 7 },
-];
+function generateDataForRange(from: Date, to: Date) {
+  const days = eachDayOfInterval({ start: from, end: to });
 
-const completionData = [
-  { day: 'Mon', rate: 78 },
-  { day: 'Tue', rate: 82 },
-  { day: 'Wed', rate: 75 },
-  { day: 'Thu', rate: 88 },
-  { day: 'Fri', rate: 85 },
-  { day: 'Sat', rate: 90 },
-  { day: 'Sun', rate: 92 },
-];
+  const submissionData = days.map((day) => {
+    const seed = day.getTime() / 86400000;
+    const submissions = Math.round(seededRandom(seed) * 30 + 3);
+    return {
+      day: format(day, days.length > 14 ? 'MMM d' : 'EEE d'),
+      submissions,
+      date: day,
+    };
+  });
 
-const formPerformance = [
-  { name: 'Contact Form', views: 340, submissions: 128, rate: 37.6 },
-  { name: 'Feedback Survey', views: 210, submissions: 95, rate: 45.2 },
-  { name: 'Job Application', views: 180, submissions: 42, rate: 23.3 },
-  { name: 'Event Registration', views: 150, submissions: 110, rate: 73.3 },
-];
+  const completionData = days.map((day) => {
+    const seed = day.getTime() / 86400000 + 100;
+    const rate = Math.round(seededRandom(seed) * 30 + 65);
+    return {
+      day: format(day, days.length > 14 ? 'MMM d' : 'EEE d'),
+      rate: Math.min(rate, 100),
+    };
+  });
+
+  const totalSubmissions = submissionData.reduce((s, d) => s + d.submissions, 0);
+  const avgRate = Math.round(completionData.reduce((s, d) => s + d.rate, 0) / completionData.length);
+  const totalViews = Math.round(totalSubmissions * (2.5 + seededRandom(from.getTime()) * 1.5));
+  const totalForms = Math.round(8 + seededRandom(to.getTime()) * 8);
+
+  const fieldTypeData = [
+    { name: 'Short Text', value: Math.round(20 + seededRandom(from.getTime() + 1) * 20) },
+    { name: 'Email', value: Math.round(10 + seededRandom(from.getTime() + 2) * 15) },
+    { name: 'Dropdown', value: Math.round(8 + seededRandom(from.getTime() + 3) * 15) },
+    { name: 'Checkbox', value: Math.round(5 + seededRandom(from.getTime() + 4) * 12) },
+    { name: 'Number', value: Math.round(3 + seededRandom(from.getTime() + 5) * 10) },
+    { name: 'Other', value: Math.round(2 + seededRandom(from.getTime() + 6) * 8) },
+  ];
+
+  const formPerformance = [
+    'Contact Form', 'Feedback Survey', 'Job Application', 'Event Registration',
+  ].map((name, i) => {
+    const views = Math.round(50 + seededRandom(from.getTime() + i * 10) * 300);
+    const subs = Math.round(views * (0.2 + seededRandom(to.getTime() + i * 10) * 0.5));
+    return { name, views, submissions: subs, rate: Math.round((subs / views) * 1000) / 10 };
+  });
+
+  return { submissionData, completionData, fieldTypeData, formPerformance, totalSubmissions, avgRate, totalViews, totalForms };
+}
 
 const PIE_COLORS = [
   'hsl(24, 95%, 53%)',
@@ -54,28 +74,37 @@ const PIE_COLORS = [
 
 const Analytics = () => {
   const navigate = useNavigate();
-  const [timeRange, setTimeRange] = useState('7d');
+  const today = new Date();
+  const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
+    from: subDays(today, 6),
+    to: today,
+  });
+
+  const data = useMemo(
+    () => generateDataForRange(dateRange.from, dateRange.to),
+    [dateRange.from.getTime(), dateRange.to.getTime()]
+  );
+
+  const dayCount = differenceInDays(dateRange.to, dateRange.from) + 1;
+
+  const handlePreset = (days: number) => {
+    setDateRange({ from: subDays(today, days - 1), to: today });
+  };
 
   const stats = [
-    { label: 'Total Forms', value: '12', icon: FileText, change: '+2 this week' },
-    { label: 'Total Submissions', value: '108', icon: Users, change: '+23 this week' },
-    { label: 'Avg. Completion Rate', value: '84%', icon: CheckCircle, change: '+3% vs last week' },
-    { label: 'Total Views', value: '880', icon: Eye, change: '+120 this week' },
+    { label: 'Total Forms', value: String(data.totalForms), icon: FileText, change: `in ${dayCount} days` },
+    { label: 'Total Submissions', value: String(data.totalSubmissions), icon: Users, change: `in ${dayCount} days` },
+    { label: 'Avg. Completion Rate', value: `${data.avgRate}%`, icon: CheckCircle, change: `avg over ${dayCount} days` },
+    { label: 'Total Views', value: String(data.totalViews), icon: Eye, change: `in ${dayCount} days` },
   ];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-md border-b border-border">
         <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate('/')}
-                className="mr-1"
-              >
+              <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="mr-1">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div className="w-10 h-10 rounded-xl overflow-hidden liftup-shadow">
@@ -87,16 +116,54 @@ const Analytics = () => {
               </div>
             </div>
 
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7d">Last 7 days</SelectItem>
-                <SelectItem value="30d">Last 30 days</SelectItem>
-                <SelectItem value="90d">Last 90 days</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-2">
+              {/* Preset buttons */}
+              <div className="hidden sm:flex items-center gap-1">
+                {[{ label: '7D', days: 7 }, { label: '14D', days: 14 }, { label: '30D', days: 30 }, { label: '90D', days: 90 }].map((p) => (
+                  <Button
+                    key={p.label}
+                    variant={dayCount === p.days ? 'default' : 'outline'}
+                    size="sm"
+                    className={cn('h-8 px-3 text-xs', dayCount === p.days && 'liftup-gradient text-primary-foreground border-0')}
+                    onClick={() => handlePreset(p.days)}
+                  >
+                    {p.label}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Date range picker */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 gap-2 text-xs">
+                    <CalendarIcon className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">
+                      {format(dateRange.from, 'MMM d')} – {format(dateRange.to, 'MMM d, yyyy')}
+                    </span>
+                    <span className="sm:hidden">
+                      {format(dateRange.from, 'M/d')} – {format(dateRange.to, 'M/d')}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="range"
+                    selected={{ from: dateRange.from, to: dateRange.to }}
+                    onSelect={(range) => {
+                      if (range?.from && range?.to) {
+                        setDateRange({ from: range.from, to: range.to });
+                      } else if (range?.from) {
+                        setDateRange({ from: range.from, to: range.from });
+                      }
+                    }}
+                    numberOfMonths={2}
+                    disabled={(date) => date > today}
+                    initialFocus
+                    className={cn('p-3 pointer-events-auto')}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </div>
       </header>
@@ -123,7 +190,6 @@ const Analytics = () => {
 
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Submissions Chart */}
           <Card className="liftup-shadow-sm">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
@@ -135,18 +201,11 @@ const Analytics = () => {
             <CardContent>
               <div className="h-[260px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={submissionData}>
+                  <BarChart data={data.submissionData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
+                    <XAxis dataKey="day" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} interval={dayCount > 30 ? Math.floor(dayCount / 10) : 0} />
                     <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
-                    <Tooltip
-                      contentStyle={{
-                        background: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                        fontSize: 13,
-                      }}
-                    />
+                    <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: 13 }} />
                     <Bar dataKey="submissions" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -154,7 +213,6 @@ const Analytics = () => {
             </CardContent>
           </Card>
 
-          {/* Completion Rate Chart */}
           <Card className="liftup-shadow-sm">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
@@ -166,32 +224,18 @@ const Analytics = () => {
             <CardContent>
               <div className="h-[260px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={completionData}>
+                  <AreaChart data={data.completionData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} />
+                    <XAxis dataKey="day" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} interval={dayCount > 30 ? Math.floor(dayCount / 10) : 0} />
                     <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} domain={[0, 100]} />
-                    <Tooltip
-                      contentStyle={{
-                        background: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                        fontSize: 13,
-                      }}
-                      formatter={(value: number) => [`${value}%`, 'Rate']}
-                    />
+                    <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: 13 }} formatter={(value: number) => [`${value}%`, 'Rate']} />
                     <defs>
                       <linearGradient id="colorRate" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
                         <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <Area
-                      type="monotone"
-                      dataKey="rate"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={2}
-                      fill="url(#colorRate)"
-                    />
+                    <Area type="monotone" dataKey="rate" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#colorRate)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -201,7 +245,6 @@ const Analytics = () => {
 
         {/* Bottom Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Field Type Distribution */}
           <Card className="liftup-shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">Field Type Usage</CardTitle>
@@ -211,37 +254,19 @@ const Analytics = () => {
               <div className="h-[220px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie
-                      data={fieldTypeData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={4}
-                      dataKey="value"
-                    >
-                      {fieldTypeData.map((_, index) => (
+                    <Pie data={data.fieldTypeData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={4} dataKey="value">
+                      {data.fieldTypeData.map((_, index) => (
                         <Cell key={index} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        background: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                        fontSize: 13,
-                      }}
-                    />
+                    <Tooltip contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: 13 }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
               <div className="flex flex-wrap gap-3 justify-center mt-2">
-                {fieldTypeData.map((entry, index) => (
+                {data.fieldTypeData.map((entry, index) => (
                   <div key={entry.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <div
-                      className="w-2.5 h-2.5 rounded-full"
-                      style={{ background: PIE_COLORS[index % PIE_COLORS.length] }}
-                    />
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ background: PIE_COLORS[index % PIE_COLORS.length] }} />
                     {entry.name}
                   </div>
                 ))}
@@ -249,7 +274,6 @@ const Analytics = () => {
             </CardContent>
           </Card>
 
-          {/* Form Performance Table */}
           <Card className="lg:col-span-2 liftup-shadow-sm">
             <CardHeader>
               <CardTitle className="text-base">Form Performance</CardTitle>
@@ -267,16 +291,14 @@ const Analytics = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {formPerformance.map((form) => (
+                    {data.formPerformance.map((form) => (
                       <tr key={form.name} className="border-b border-border/50 last:border-0">
                         <td className="py-3 px-2 font-medium text-foreground">{form.name}</td>
                         <td className="text-right py-3 px-2 text-muted-foreground">{form.views}</td>
                         <td className="text-right py-3 px-2 text-muted-foreground">{form.submissions}</td>
                         <td className="text-right py-3 px-2">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            form.rate >= 50
-                              ? 'bg-accent text-accent-foreground'
-                              : 'bg-secondary text-secondary-foreground'
+                            form.rate >= 50 ? 'bg-accent text-accent-foreground' : 'bg-secondary text-secondary-foreground'
                           }`}>
                             {form.rate}%
                           </span>
