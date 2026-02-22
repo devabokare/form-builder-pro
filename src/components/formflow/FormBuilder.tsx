@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   DndContext,
   DragEndEvent,
@@ -24,12 +25,14 @@ import {
   Save, 
   Share2, 
   Check,
-  ArrowLeft
+  ArrowLeft,
+  BarChart3
 } from 'lucide-react';
 import { toast } from 'sonner';
 import clipboardIcon from '@/assets/clipboard-icon.png';
 
 export function FormBuilder() {
+  const navigate = useNavigate();
   const [formTitle, setFormTitle] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [fields, setFields] = useState<FormField[]>([]);
@@ -179,10 +182,19 @@ export function FormBuilder() {
                   <p className="text-xs text-muted-foreground">Form Builder</p>
                 </div>
               </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate('/analytics')}
+                  title="Analytics"
+                >
+                  <BarChart3 className="w-5 h-5" />
+                </Button>
+              </div>
             </div>
           </div>
         </header>
-
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-foreground mb-3">Choose a Template</h2>
@@ -227,6 +239,14 @@ export function FormBuilder() {
               </div>
 
               <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate('/analytics')}
+                  title="Analytics"
+                >
+                  <BarChart3 className="w-5 h-5" />
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"
