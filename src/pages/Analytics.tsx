@@ -1,13 +1,17 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ArrowLeft, BarChart3, Users, FileText, TrendingUp, Eye, CheckCircle, CalendarIcon } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ArrowLeft, BarChart3, Users, FileText, TrendingUp, Eye, CheckCircle, CalendarIcon, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
 import { format, subDays, eachDayOfInterval, differenceInDays } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import clipboardIcon from '@/assets/clipboard-icon.png';
 
 // Seed-based pseudo-random for consistent data per date
@@ -98,6 +102,121 @@ const Analytics = () => {
     { label: 'Total Views', value: String(data.totalViews), icon: Eye, change: `in ${dayCount} days` },
   ];
 
+  const rangeLabel = `${format(dateRange.from, 'MMM d, yyyy')} - ${format(dateRange.to, 'MMM d, yyyy')}`;
+
+  const exportCSV = useCallback(() => {
+    const lines: string[] = [];
+    lines.push('LiftupForms Analytics Report');
+    lines.push(`Date Range: ${rangeLabel}`);
+    lines.push('');
+
+    // Summary
+    lines.push('Summary');
+    stats.forEach((s) => lines.push(`${s.label},${s.value}`));
+    lines.push('');
+
+    // Submissions
+    lines.push('Daily Submissions');
+    lines.push('Day,Submissions');
+    data.submissionData.forEach((d) => lines.push(`${d.day},${d.submissions}`));
+    lines.push('');
+
+    // Completion Rate
+    lines.push('Daily Completion Rate');
+    lines.push('Day,Rate (%)');
+    data.completionData.forEach((d) => lines.push(`${d.day},${d.rate}`));
+    lines.push('');
+
+    // Field Types
+    lines.push('Field Type Usage');
+    lines.push('Type,Count');
+    data.fieldTypeData.forEach((d) => lines.push(`${d.name},${d.value}`));
+    lines.push('');
+
+    // Form Performance
+    lines.push('Form Performance');
+    lines.push('Form Name,Views,Submissions,Rate (%)');
+    data.formPerformance.forEach((f) => lines.push(`${f.name},${f.views},${f.submissions},${f.rate}`));
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics-${format(dateRange.from, 'yyyy-MM-dd')}-to-${format(dateRange.to, 'yyyy-MM-dd')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('CSV exported successfully!');
+  }, [data, dateRange, stats, rangeLabel]);
+
+  const exportPDF = useCallback(() => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text('LiftupForms Analytics', 14, 20);
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Date Range: ${rangeLabel}`, 14, 28);
+
+    // Summary table
+    doc.setFontSize(13);
+    doc.setTextColor(0);
+    doc.text('Summary', 14, 40);
+    autoTable(doc, {
+      startY: 44,
+      head: [['Metric', 'Value']],
+      body: stats.map((s) => [s.label, s.value]),
+      theme: 'striped',
+      headStyles: { fillColor: [234, 120, 30] },
+      margin: { left: 14 },
+    });
+
+    // Submissions table
+    let y = (doc as any).lastAutoTable.finalY + 12;
+    doc.setFontSize(13);
+    doc.text('Daily Submissions', 14, y);
+    autoTable(doc, {
+      startY: y + 4,
+      head: [['Day', 'Submissions']],
+      body: data.submissionData.map((d) => [d.day, String(d.submissions)]),
+      theme: 'striped',
+      headStyles: { fillColor: [234, 120, 30] },
+      margin: { left: 14 },
+    });
+
+    // Form Performance table
+    y = (doc as any).lastAutoTable.finalY + 12;
+    if (y > 240) { doc.addPage(); y = 20; }
+    doc.setFontSize(13);
+    doc.text('Form Performance', 14, y);
+    autoTable(doc, {
+      startY: y + 4,
+      head: [['Form Name', 'Views', 'Submissions', 'Rate (%)']],
+      body: data.formPerformance.map((f) => [f.name, String(f.views), String(f.submissions), `${f.rate}%`]),
+      theme: 'striped',
+      headStyles: { fillColor: [234, 120, 30] },
+      margin: { left: 14 },
+    });
+
+    // Field Types table
+    y = (doc as any).lastAutoTable.finalY + 12;
+    if (y > 240) { doc.addPage(); y = 20; }
+    doc.setFontSize(13);
+    doc.text('Field Type Usage', 14, y);
+    autoTable(doc, {
+      startY: y + 4,
+      head: [['Field Type', 'Count']],
+      body: data.fieldTypeData.map((d) => [d.name, String(d.value)]),
+      theme: 'striped',
+      headStyles: { fillColor: [234, 120, 30] },
+      margin: { left: 14 },
+    });
+
+    doc.save(`analytics-${format(dateRange.from, 'yyyy-MM-dd')}-to-${format(dateRange.to, 'yyyy-MM-dd')}.pdf`);
+    toast.success('PDF exported successfully!');
+  }, [data, dateRange, stats, rangeLabel]);
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-md border-b border-border">
@@ -163,6 +282,26 @@ const Analytics = () => {
                   />
                 </PopoverContent>
               </Popover>
+
+              {/* Export dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 gap-2 text-xs">
+                    <Download className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Export</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={exportCSV}>
+                    <FileText className="w-4 h-4 mr-2" />
+                    Export as CSV
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={exportPDF}>
+                    <FileText className="w-4 h-4 mr-2" />
+                    Export as PDF
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
